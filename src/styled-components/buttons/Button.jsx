@@ -1,0 +1,11 @@
+import styled from "styled-components";
+
+export const Button1 =  styled.button`
+background-color: ${(props)=>props.theme[props.currentTheme].bgGreen};
+padding: 1rem;
+color: ${(props)=>props.theme[props.currentTheme].text};
+font-weight: bold;
+border-radius: 10px;
+border: 1px solid ${(props)=>props.theme[props.currentTheme].text};
+cursor: pointer;
+`
