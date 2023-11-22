@@ -45,6 +45,7 @@ top: 3.5rem;
 padding: 10px;
 width: 96%;
 background-color: whitesmoke;
+z-index: 10000;
 `
 const SearchedUsersContainer = styled.div`
   display: flex;
