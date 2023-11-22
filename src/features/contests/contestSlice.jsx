@@ -137,10 +137,11 @@ export const contestSlice = createSlice({
         state.loading = true;
       })
       .addCase(joinContestAsync.fulfilled, (state, action) => {
-        console.log(action.payload);
+        // console.log(action.payload);
         state.loading = false;
         let findIndex=state.allContests.findIndex((contest)=>contest._id===action.payload.resData.updatedContest._id)
         if (findIndex !== -1) state.allContests[findIndex]=action.payload.resData.updatedContest;
+        state.allContests=state.allContests.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         state.error = null;
         const currentTheme = action.payload.currentTheme;
         toastSuccess('Contest Joined !','⚔️',currentTheme);

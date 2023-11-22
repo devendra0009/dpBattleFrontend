@@ -49,25 +49,11 @@ const AllContest = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
-  // const currentContests =
-  //   allContests && allContests.slice(indexOfFirstItem, indexOfLastItem);
 
-  // const totalPages =
-  //   allContests && Math.ceil(allContests.length / ITEMS_PER_PAGE);
-
-  // const filteredContests = {
-  //   fighting: currentContests.filter(
-  //     (contest) => contest.status === 'fighting'
-  //   ),
-  //   matching: currentContests.filter(
-  //     (contest) => contest.status === 'matching'
-  //   ),
-  //   finished: currentContests.filter(
-  //     (contest) => contest.status === 'closed'
-  //   ),
-  // };
-  // const filteredContest = filteredContests[selectedOption.value];
-  // console.log(filteredContest&& filteredContest);
+  const handleSelectChange = (selected) => {
+    setSelectedOption(selected);
+    setCurrentPage(1); // Reset currentPage to 1 when a new option is selected
+  };
 
   const filteredContests = allContests&&allContests.filter(
     (contest) => contest.status === selectedOption.value
@@ -123,7 +109,7 @@ const AllContest = () => {
         <Select
           defaultValue={selectedOption}
           isSearchable={false}
-          onChange={setSelectedOption}
+          onChange={handleSelectChange}
           options={options}
           styles={theme}
           className="select"
@@ -136,7 +122,7 @@ const AllContest = () => {
             <>
               {
                 <CheckedContainer status={contest.status} key={idx}>
-                  <ContestComponent contest={contest} i={idx} />
+                  <ContestComponent contest={contest} i={idx} setCurrentPage={setCurrentPage} />
                 </CheckedContainer>
               }
             </>

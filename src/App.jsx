@@ -3,10 +3,10 @@ import { GlobalStyle } from './styled-components/globals/globalStyleVariables';
 import { ThemeProvider } from 'styled-components';
 import { router, theme } from './utils/commonUtils';
 import { ToastContainer } from 'react-toastify';
-import { RouterProvider } from 'react-router-dom';
+import { RouterProvider, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectTheme } from './features/theme/themeSlice';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   authenticateUserAsync,
   selectUserAuthenticated,
@@ -39,7 +39,7 @@ function App() {
       dispatch(fetchAllContestAsync());
       dispatch(fetchAllUsersAsync());
     }
-  });
+  },[dispatch,userAuthenticated]);
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle currentTheme={currentTheme} />

@@ -8,12 +8,13 @@ import styled from 'styled-components';
 
 const LoginPage = () => {
   const userAuthenticated = useSelector(selectUserAuthenticated);
-
+  const navigate=useNavigate();
+  if (userAuthenticated) {
+    navigate('/');
+    return null;
+  }
   return (
     <>
-      {
-        userAuthenticated  && <Navigate to='/' />
-      }
       <div>
         <FloatingToggler>
           <ThemeToggler />

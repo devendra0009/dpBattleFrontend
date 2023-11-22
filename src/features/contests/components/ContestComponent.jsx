@@ -10,8 +10,10 @@ import { AiFillLike } from 'react-icons/ai';
 import { CgBoy } from 'react-icons/cg';
 import { updateContestAsync } from '../contestSlice';
 import { useNavigate } from 'react-router-dom';
+import { BiSolidCrown } from 'react-icons/bi';
+import { BiSolidDownvote, BiSolidUpvote } from 'react-icons/bi';
 
-const ContestComponent = ({ contest, i }) => {
+const ContestComponent = ({ contest, i, setCurrentPage }) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -74,9 +76,31 @@ const ContestComponent = ({ contest, i }) => {
   };
 
   return (
-    <ContestComponentContainer currentTheme={currentTheme}>
+    <ContestComponentContainer currentTheme={currentTheme} >
       {/* divide this container into two parts */}
       <UserAContainer currentTheme={currentTheme}>
+        {contest.status === 'fighting' &&
+          (contest.votesU1 >= contest.votesU2 ? (
+            <BiSolidUpvote size={40} fill="#4169E1" className='vote-icon' />
+          ) : (
+            <BiSolidDownvote size={40} fill="#4169E1" className='vote-icon'/>
+          ))}
+        {contest.status === 'closed' && contest.votesU1 >= contest.votesU2 && (
+          <BiSolidCrown
+            size={40}
+            fill="orange"
+            style={{
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+              borderRadius: '100%',
+              background: 'black',
+              padding: '0.3rem',
+            }}
+          />
+        )}
+
         <Image src={contest.img1} alt="img1" className="img" />
         {contest.status === 'fighting' && (
           <ButtonContainer1 isButtonDisabled={isButtonDisabled} i={i}>
@@ -105,7 +129,7 @@ const ContestComponent = ({ contest, i }) => {
       <Extras currentTheme={currentTheme}>
         <GiBattleAxe size={30} className="axe-icon" />
         <TimerContainer currentTheme={currentTheme}>
-          {(contest.status === 'fighting'|| contest.status ==='matching') && (
+          {(contest.status === 'fighting' || contest.status === 'matching') && (
             <>
               {' '}
               <WiTime12
@@ -115,8 +139,8 @@ const ContestComponent = ({ contest, i }) => {
               />
               <Heading4 currentTheme={currentTheme}>
                 {' '}
-                Created at: {contest.status}
-                {/* Created at: {formattedDate}{' '} */}
+                {/* Created at: {contest.status} */}
+                Created at: {formattedDate}{' '}
               </Heading4>
               <Heading4 currentTheme={currentTheme}>
                 {' '}
@@ -131,6 +155,28 @@ const ContestComponent = ({ contest, i }) => {
         </TimerContainer>
       </Extras>
       <UserBContainer currentTheme={currentTheme}>
+        {contest.status === 'fighting' &&
+          (contest.votesU1 <= contest.votesU2 ? (
+            <BiSolidUpvote size={40} fill="#FF474D" className='vote-icon'/>
+          ) : (
+            <BiSolidDownvote size={40} fill="#FF474D" className='vote-icon'/>
+          ))}
+        {contest.status === 'closed' && contest.votesU1 <= contest.votesU2 && (
+          <BiSolidCrown
+            size={40}
+            fill="orange"
+            style={{
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+              borderRadius: '100%',
+              background: 'black',
+              padding: '0.3rem',
+            }}
+          />
+        )}
+
         <Image
           src={
             contest.img2 ||
@@ -166,6 +212,9 @@ const ContestComponent = ({ contest, i }) => {
     </ContestComponentContainer>
   );
 };
+
+
+
 
 const moveUpFadeOut = keyframes`
   0% {
@@ -300,6 +349,10 @@ const ContestComponentContainer = styled.div`
       height: 80px;
     }
   }
+  .vote-icon{
+  background:transparent;
+  
+}
 `;
 const Image = styled.img`
   width: 120px;
@@ -315,6 +368,7 @@ const UserAContainer = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  position: relative;
 `;
 
 const UserBContainer = styled.div`
@@ -324,6 +378,7 @@ const UserBContainer = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  position: relative;
 `;
 const Extras = styled.div`
   background-color: ${(props) => props.theme[props.currentTheme].bg2};
