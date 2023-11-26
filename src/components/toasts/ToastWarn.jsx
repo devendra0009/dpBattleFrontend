@@ -1,6 +1,6 @@
 import { toast } from 'react-toastify';
 
-export const toastWarn = (msg, mode) => {
+export const toastWarn = (msg, icon,currentTheme) => {
   console.log(msg);
   toast.warn(msg, {
     position: 'top-left',
@@ -9,6 +9,8 @@ export const toastWarn = (msg, mode) => {
     closeOnClick: true,
     pauseOnHover: true,
     draggable: true,
+    theme:currentTheme==='light'?'light':'dark',
     progress: 0,
+    icon: icon
   });
 };

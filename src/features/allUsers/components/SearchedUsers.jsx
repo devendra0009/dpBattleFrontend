@@ -5,9 +5,11 @@ import { selectAllUsers } from '../allUsersSlice';
 import styled from 'styled-components';
 import { LuEye } from 'react-icons/lu';
 import { useNavigate } from 'react-router-dom';
+import { selectTheme } from '../../theme/themeSlice';
 
 const SearchedUsers = () => {
   const navigate=useNavigate();
+  const currentTheme=useSelector(selectTheme)
   const searchedUser = useSelector(selectSearchedUser);
   const allUsers = useSelector(selectAllUsers);
   const matchedUsers =
@@ -23,8 +25,8 @@ const SearchedUsers = () => {
         navigate(`/profile/user?id=${user._id}`);
      }
   return (
-    <MainContainer>
-    <SearchedUsersContainer >
+    <MainContainer currentTheme={currentTheme}>
+    <SearchedUsersContainer currentTheme={currentTheme}>
       {' '}
       {matchedUsers?.length!==0 ?
         matchedUsers.map((matchedUser, idx) => (
@@ -42,21 +44,21 @@ const MainContainer=styled.div`
 position: absolute;
 left: 0;
 top: 3.5rem;
-padding: 10px;
-width: 96%;
-background-color: whitesmoke;
+/* padding: 10px; */
+border: 1px solid gray;
+width: 100%;
+background-color: ${props=>props.theme[props.currentTheme].bg};
 z-index: 10000;
+
 `
 const SearchedUsersContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
   height: 200px;
+  padding: 1rem;
   overflow-y: scroll;
   scrollbar-color: transparent transparent;
-  /* background-color: blue; */
-  /* align-items: flex-start; */
-  /* padding: 1rem; */
   div {
     display: flex;
     /* background-color: whitesmoke; */
@@ -75,7 +77,7 @@ const SearchedUsersContainer = styled.div`
     &:hover {
       cursor: pointer;
       scale: 103%;
-      background-color: lightgray;
+      background-color: ${props=>props.theme[props.currentTheme].bg};
     }
   }
   h4{

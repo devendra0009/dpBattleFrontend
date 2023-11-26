@@ -9,9 +9,14 @@ import { IoMdExit } from 'react-icons/io';
 import { logoutUserAsync } from '../../features/auth/authSlice';
 import { SearchInput } from '../../styled-components/inputs/Input';
 import { MdOutlinePersonSearch } from 'react-icons/md';
-import { clearSearchedUser, clearUserState, selectSearchedUser, setSearchedUser } from '../../features/user/userSlice';
+import {
+  clearSearchedUser,
+  clearUserState,
+  selectSearchedUser,
+  setSearchedUser,
+} from '../../features/user/userSlice';
 import SearchedUsers from '../../features/allUsers/components/SearchedUsers';
-import { MdClear } from "react-icons/md";
+import { MdClear } from 'react-icons/md';
 
 const navigation = [
   { name: 'Home', to: '/' },
@@ -23,8 +28,8 @@ const navigation = [
 
 const Navbar = (props) => {
   const currentTheme = useSelector(selectTheme);
-  const searchedUser=useSelector(selectSearchedUser)
-  const navigate=useNavigate();
+  const searchedUser = useSelector(selectSearchedUser);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleLogout = async () => {
@@ -40,9 +45,9 @@ const Navbar = (props) => {
     // console.log(e.target.value);
     dispatch(setSearchedUser(e.target.value));
   };
-  const handleClear=()=>{
-    dispatch(clearSearchedUser())
-  }
+  const handleClear = () => {
+    dispatch(clearSearchedUser());
+  };
   return (
     <NavContainer>
       <Link to="/">
@@ -53,13 +58,13 @@ const Navbar = (props) => {
           <SearchInput
             placeholder="Enter user's email"
             onChange={(e) => handleChange(e)}
-            value={searchedUser===null?'':searchedUser}
+            value={searchedUser === null ? '' : searchedUser}
           />
-          <div className='icons-container'>
-          <MdClear className='clear-icon' size={30} onClick={handleClear} />
-          <MdOutlinePersonSearch className="icon" size={30} />
+          <div className="icons-container">
+            <MdClear className="clear-icon" size={25} onClick={handleClear} fill='red'/>
+            <MdOutlinePersonSearch className="icon" size={25} />
           </div>
-          {searchedUser && searchedUser !== '' &&<SearchedUsers />}
+          {searchedUser && searchedUser !== '' && <SearchedUsers />}
         </SearchBar>
         <RouteTags currentTheme={currentTheme}>
           {navigation.map((item, idx) => (
@@ -72,11 +77,11 @@ const Navbar = (props) => {
         </RouteTags>
       </MidNav>
       <IconWrapper className="icons">
-      <Link to="/">
-        <Logo2 src={logo} />
-      </Link>
+        <Link to="/">
+          <Logo2 src={logo} />
+        </Link>
         <IoMdExit size={30} className="exit" onClick={handleLogout} />
-        <ThemeToggler  />
+        <ThemeToggler />
       </IconWrapper>
     </NavContainer>
   );
@@ -91,31 +96,46 @@ const MidNav = styled.div`
 `;
 
 const SearchBar = styled.div`
-  /* background-color: red; */
-  
   width: 100%;
   /* margin: 0 auto; */
   position: relative;
   padding: 0.5rem;
-  margin-left:-0.5rem ;
+  margin-left: -0.5rem;
   border-radius: 10px;
   border: 1px solid gray;
-  .icons-container{
+  .icons-container {
     position: absolute;
-    top: 7px;
-    right: 5px;
-    .clear-icon{
+    top: 10px;
+    right: 10px;
+    .clear-icon {
       margin-right: 2px;
-      &:hover{
+      &:hover {
         cursor: pointer;
       }
     }
-    .icon{
+    .icon {
       margin-left: 2px;
     }
-/* display: flex;
-align-items: center;
-gap: 10px; */
+  }
+  @media (max-width: 430px) {
+    width: 80%;
+    margin: 0 auto;
+    padding: 0.3rem;
+    /* margin-left: 0; */
+    .icons-container {
+      top: 10px;
+      right: 8px;
+      .clear-icon {
+        width: 20px;
+        height: auto;
+        /* size: 12px; */
+        
+      }
+      .icon {
+        width: 20px;
+        height: auto;
+      }
+    }
   }
 `;
 
@@ -124,7 +144,13 @@ const IconWrapper = styled.div`
   align-items: center;
   gap: 1rem;
   .exit {
-    /* color: red; */
+    cursor: pointer;
+  }
+  @media (max-width:430px)
+  {
+    .exit{
+      width: 25px;
+    }
   }
 `;
 
@@ -134,10 +160,17 @@ const NavContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  @media (max-width:750px)
-  {
-    flex-direction : column-reverse ;
+  @media (max-width: 1050px) {
+    font-size: 14px;
+  }
+  @media (max-width: 750px) {
+    flex-direction: column-reverse;
     gap: 1rem;
+    font-size: 14px;
+  }
+  @media (max-width:430px)
+  {
+    font-size: 13px;
   }
 `;
 
@@ -146,20 +179,22 @@ const Logo = styled.img`
   height: 3rem;
   border-radius: 50%;
   cursor: pointer;
-  @media (max-width:750px)
-  {
+  @media (max-width: 750px) {
     display: none;
   }
-`;
+  `;
 const Logo2 = styled.img`
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
   cursor: pointer;
   display: none;
-  @media (max-width:750px)
-  {
+  @media (max-width: 750px) {
     display: block;
+  }
+  @media (max-width: 430px) {
+    width: 2.5rem;
+    height: 2.5rem;
   }
 `;
 const RouteTags = styled.ul`
@@ -169,6 +204,9 @@ const RouteTags = styled.ul`
   padding: 1rem;
   box-shadow: ${(props) => props.theme[props.currentTheme].border};
   border-radius: 1rem;
+  @media (max-width: 430px) {
+    text-align: center;
+  }
 `;
 const RouteTag = styled.li`
   text-decoration: none;
@@ -176,7 +214,7 @@ const RouteTag = styled.li`
   .link {
     text-decoration: none;
     padding-bottom: 1px;
-    &:hover{
+    &:hover {
       border-bottom: 1px solid lightgreen;
     }
   }

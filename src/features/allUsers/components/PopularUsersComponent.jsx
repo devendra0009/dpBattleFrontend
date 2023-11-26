@@ -27,10 +27,12 @@ const PopularUsersComponent = () => {
     <MainContainer>
       <PopularUsersComponentContainer currentTheme={currentTheme}>
         <h2>Top Profiles</h2>
-        {allUsers &&
-          allUsers.map((user, idx) => (
-            <PopularUserElement user={user} key={idx} i={idx} />
-          ))}
+        <NamesUser>
+          {allUsers &&
+            allUsers.map((user, idx) => (
+              <PopularUserElement user={user} key={idx} i={idx} />
+            ))}
+        </NamesUser>
       </PopularUsersComponentContainer>
       {/* <PopularUserProfile selectedUser={selectedUser} /> */}
       {selectedPopularUserProfile ? (
@@ -48,6 +50,19 @@ const PopularUsersComponent = () => {
   );
 };
 
+const NamesUser = styled.div`
+  width: 90%;
+  border-radius: 10px;
+  height: 400px;
+  overflow-y: scroll;
+  padding: 1rem;
+  @media (max-width: 750px) {
+    width: 90%;
+    height: 120px;
+    overflow-y: scroll;
+    padding: 0.5rem 1rem;
+  }
+`;
 const PopularUsersComponentContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -58,11 +73,24 @@ const PopularUsersComponentContainer = styled.div`
   gap: 1rem;
   padding: 2rem 0;
   h2 {
-    background-color: lightskyblue;
+    /* background-color: lightskyblue; */
     padding: 0.7rem;
     border-radius: 10px;
   }
   @media (max-width: 750px) {
+    width: 90%;
+    margin: 0 auto;
+    h2 {
+      font-size: 18px;
+    }
+  }
+  @media (max-width: 430px) {
+    width: 95%;
+    margin: 0 auto;
+    font-size: 14px;
+    h2 {
+      font-size: 15px;
+    }
   }
 `;
 
@@ -73,7 +101,7 @@ const MainContainer = styled.div`
   @media (max-width: 750px) {
     grid-template-columns: none;
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
 `;
 
@@ -108,7 +136,7 @@ const Heading = styled.div`
 `;
 
 const PopularUserElementContainer = styled.div`
-  width: 90%;
+  margin: 0 auto;
   padding: 1rem 0.8rem;
   display: flex;
   background-color: ${(props) => props.theme[props.currentTheme].bg};
@@ -116,7 +144,14 @@ const PopularUserElementContainer = styled.div`
   gap: 1rem;
   align-items: center;
   cursor: pointer;
+  /* border-bottom: 1px solid lightgray; */
   border-radius: 10px;
+  h3 {
+    background-color: ${(props) => props.theme[props.currentTheme].bg};
+  }
+  h4 {
+    background-color: ${(props) => props.theme[props.currentTheme].bg};
+  }
 
   &:hover {
     scale: 105%;
@@ -128,12 +163,6 @@ const PopularUserElementContainer = styled.div`
     h4 {
       background-color: ${(props) => props.theme[props.currentTheme].bgGreen};
     }
-  }
-  h3 {
-    background-color: ${(props) => props.theme[props.currentTheme].bg};
-  }
-  h4 {
-    background-color: ${(props) => props.theme[props.currentTheme].bg};
   }
 `;
 

@@ -147,11 +147,33 @@ const ButtonContainer = styled.div`
   &:hover {
     scale: 104%;
   }
+  @media (max-width: 750px) {
+    .profile-icon {
+      width: 30px;
+      height: 28px;
+    }
+    .door-btn {
+      width: 30px;
+      height: 28px;
+    }
+  }
+  @media (max-width: 430px) {
+    .profile-icon {
+      width: 28px;
+      height: 28px;
+    }
+    .door-btn {
+      width: 28px;
+      height: 28px;
+    }
+  }
 `;
 
 const Form = styled.form`
   background-color: ${(props) => props.theme[props.currentTheme].bg2};
   padding: 2rem;
+  /* background-color: red; */
+  margin: auto 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -165,6 +187,13 @@ const Form = styled.form`
     background-color: ${(props) => props.theme[props.currentTheme].bg2};
     text-align: center;
     color: red;
+  }
+
+  @media (max-width: 750px) {
+    padding: 1rem;
+  }
+  @media (max-width: 430px) {
+    padding: 0.7rem;
   }
 `;
 
@@ -197,6 +226,9 @@ const TimerContainer = styled.div`
     transform-origin: 50% 50%; // Set the transform-origin to the center
     animation: ${rotateClockwise} 5s linear infinite;
   }
+  @media (max-width: 430px) {
+  display: none;
+  }
 `;
 
 const Heading4 = styled.h4`
@@ -210,16 +242,36 @@ const Image = styled.img`
   border-radius: 100%;
   border: 1px solid lightgray;
   padding: 5px;
+
+  @media (max-width: 1050px) {
+    width: 80px;
+    height: 80px;
+  }
+  @media (max-width: 750px) {
+    width: 70px;
+    height: 70px;
+  }
 `;
 const UserAContainer = styled.div`
   background-color: ${(props) => props.theme[props.currentTheme].bg2};
-  padding: 1rem 0;
+  padding: 5rem 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 1rem;
-`;
+
+  @media (max-width: 750px) {
+    padding: 1rem;
+  }
+  @media (max-width: 430px) {
+    padding: 0.7rem;
+  }
+
+  /* @media (max-width: 750px) {
+    padding: 0.2rem 0;
+  } */
+  `;
 
 const UserBContainer = styled.div`
   background-color: ${(props) => props.theme[props.currentTheme].bg2};
@@ -228,6 +280,9 @@ const UserBContainer = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  /* @media (max-width: 750px) {
+    padding: 0.2rem 0;
+  } */
 `;
 const Extras = styled.div`
   background-color: ${(props) => props.theme[props.currentTheme].bg2};
@@ -240,6 +295,16 @@ const Extras = styled.div`
   gap: 2rem;
   .axe-icon {
     background-color: ${(props) => props.theme[props.currentTheme].bg2};
+  }
+  @media (max-width: 750px) {
+    .axe-icon {
+      width: 25px;
+    }
+  }
+  @media (max-width: 430px) {
+    .axe-icon {
+      width: 20px;
+    }
   }
 `;
 export default JoinContestItem;

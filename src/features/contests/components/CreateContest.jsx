@@ -13,12 +13,14 @@ import {
 import { fetchUserInfoAsync } from '../../user/userSlice';
 
 const TabContainer = styled.div`
-  /* width: 400px; */
-
-  /* margin :1rem auto 0 auto; */
   padding-top: 1rem;
   width: 100%;
-`;
+  @media (max-width:750px)
+  {
+    width: 90%;
+    margin: 0 auto;
+  }
+  `;
 
 const Tabs = styled.div`
   display: flex;
@@ -28,22 +30,38 @@ const Tabs = styled.div`
 const TabButton1 = styled.button`
   flex: 1;
   padding: 1rem;
-  background-color: ${(props) => (props.isactive ? '#3498db' : '#ecf0f1')};
-  color: ${(props) => (props.isactive ? '#ffffff' : '#2c3e50')};
+  background-color:${(props)=>(props.isactive ?'lightgreen': props.theme[props.currentTheme].bg )} ;
+  color: ${(props) =>  props.theme[props.currentTheme].text};
   border: none;
   border-radius: 10px 0 0px 10px;
   cursor: pointer;
   outline: none;
-`;
+  @media (max-width:750px)
+  {
+    padding: 0.8rem;
+  }
+  @media (max-width:430px)
+  {
+    padding: 0.5rem;
+  }
+  `;
 const TabButton2 = styled.button`
   flex: 1;
   padding: 1rem;
-  background-color: ${(props) => (props.isactive ? '#3498db' : '#ecf0f1')};
-  color: ${(props) => (props.isactive ? '#ffffff' : '#2c3e50')};
+  background-color:${(props)=>(props.isactive ?'lightgreen': props.theme[props.currentTheme].bg )} ;
+  color: ${(props) =>  props.theme[props.currentTheme].text};
   border: none;
   border-radius: 0 10px 10px 0px;
   cursor: pointer;
   outline: none;
+  @media (max-width:750px)
+  {
+    padding: 0.8rem;
+  }
+  @media (max-width:430px)
+  {
+    padding: 0.5rem;
+  }
 `;
 
 const FormContainer = styled.div`
@@ -51,6 +69,15 @@ const FormContainer = styled.div`
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  @media (max-width:750px)
+  {
+    font-size: 14px;
+  }
+  @media (max-width:430px)
+  {
+    /* font-size: 14px; */
+    
+  }
 `;
 // const FormHeading = styled.h2``;
 
@@ -226,6 +253,7 @@ const Form2 = () => {
 };
 
 const CreateContest = () => {
+  const currentTheme=useSelector(selectTheme)
   const [activeTab, setActiveTab] = useState('form1');
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -235,12 +263,14 @@ const CreateContest = () => {
     <TabContainer>
       <Tabs>
         <TabButton1
+        currentTheme={currentTheme}
           onClick={() => handleTabClick('form1')}
           isactive={activeTab === 'form1'}
         >
           With Random
         </TabButton1>
         <TabButton2
+        currentTheme={currentTheme}
           onClick={() => handleTabClick('form2')}
           isactive={activeTab === 'form2'}
         >

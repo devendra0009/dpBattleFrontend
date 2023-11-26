@@ -14,9 +14,9 @@ const ThemeToggler = () => {
   return (
     <ThemeTogglerContainer >
       {currentTheme === 'light' ? (
-        <BsSun onClick={handleToggleTheme} size={35} />
+        <BsSun className='sun' onClick={handleToggleTheme} size={30} />
       ) : (
-        <BsSunFill onClick={handleToggleTheme} size={35} color='aqua' />
+        <BsSunFill className='sunfill' onClick={handleToggleTheme} size={30} color='aqua' />
       )}
     </ThemeTogglerContainer>
   );
@@ -26,6 +26,15 @@ const ThemeTogglerContainer = styled.div`
   /* background-color: red; */
   display: inline-block;
   cursor: pointer;
+  @media (max-width: 430px) {
+    .sun{
+      width: 25px;
+    }
+    .sunfill{
+      width: 25px;
+
+    }
+  }
   /* hover effect bg glowing  */
 `;
 

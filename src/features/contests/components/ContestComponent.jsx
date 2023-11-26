@@ -76,14 +76,14 @@ const ContestComponent = ({ contest, i, setCurrentPage }) => {
   };
 
   return (
-    <ContestComponentContainer currentTheme={currentTheme} >
+    <ContestComponentContainer currentTheme={currentTheme}>
       {/* divide this container into two parts */}
       <UserAContainer currentTheme={currentTheme}>
         {contest.status === 'fighting' &&
           (contest.votesU1 >= contest.votesU2 ? (
-            <BiSolidUpvote size={40} fill="#4169E1" className='vote-icon' />
+            <BiSolidUpvote size={40} fill="#4169E1" className="vote-icon" />
           ) : (
-            <BiSolidDownvote size={40} fill="#4169E1" className='vote-icon'/>
+            <BiSolidDownvote size={40} fill="#4169E1" className="vote-icon" />
           ))}
         {contest.status === 'closed' && contest.votesU1 >= contest.votesU2 && (
           <BiSolidCrown
@@ -140,11 +140,11 @@ const ContestComponent = ({ contest, i, setCurrentPage }) => {
               <Heading4 currentTheme={currentTheme}>
                 {' '}
                 {/* Created at: {contest.status} */}
-                Created at: {formattedDate}{' '}
+                Created on: {formattedDate}{' '}
               </Heading4>
               <Heading4 currentTheme={currentTheme}>
                 {' '}
-                Created on: {formattedTime}{' '}
+                Created at: {formattedTime}{' '}
               </Heading4>
               <Heading4 currentTheme={currentTheme}>
                 {' '}
@@ -157,9 +157,9 @@ const ContestComponent = ({ contest, i, setCurrentPage }) => {
       <UserBContainer currentTheme={currentTheme}>
         {contest.status === 'fighting' &&
           (contest.votesU1 <= contest.votesU2 ? (
-            <BiSolidUpvote size={40} fill="#FF474D" className='vote-icon'/>
+            <BiSolidUpvote size={40} fill="#FF474D" className="vote-icon" />
           ) : (
-            <BiSolidDownvote size={40} fill="#FF474D" className='vote-icon'/>
+            <BiSolidDownvote size={40} fill="#FF474D" className="vote-icon" />
           ))}
         {contest.status === 'closed' && contest.votesU1 <= contest.votesU2 && (
           <BiSolidCrown
@@ -213,9 +213,6 @@ const ContestComponent = ({ contest, i, setCurrentPage }) => {
   );
 };
 
-
-
-
 const moveUpFadeOut = keyframes`
   0% {
     opacity: 1;
@@ -264,6 +261,20 @@ const ButtonContainer1 = styled.div`
       cursor: pointer;
     }
   }
+  @media (max-width: 750px) {
+    padding: 0.3rem;
+    .vote-icon1 {
+      width: 25px;
+      height:25px;
+    }
+    .profile-icon1 {
+      width: 25px;
+      height:25px;
+    }
+  }
+  @media (max-width: 430px) {
+    padding: 0.1rem;
+  }
 `;
 const ButtonContainer2 = styled.div`
   padding: 0.5rem;
@@ -271,6 +282,7 @@ const ButtonContainer2 = styled.div`
   justify-content: space-around;
   align-items: center;
   gap: 1rem;
+  border-radius: 10px;
   position: relative;
   .profile-icon2 {
     background-color: #ffcccb;
@@ -301,6 +313,21 @@ const ButtonContainer2 = styled.div`
       cursor: pointer;
     }
   }
+  @media (max-width: 750px) {
+    padding: 0.3rem;
+    .vote-icon2 {
+      width: 25px;
+      height:25px;
+    }
+    .profile-icon2 {
+      width: 25px;
+      height:25px;
+      /* border-radius: 100%; */
+    }
+  }
+  @media (max-width: 430px) {
+    padding: 0.1rem;
+  }
 `;
 const rotateClockwise = keyframes`
   from {
@@ -315,12 +342,19 @@ const TimerContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  font-size: 15px;
   background-color: ${(props) => props.theme[props.currentTheme].bg2};
   .time-icon {
     background-color: ${(props) => props.theme[props.currentTheme].bg2};
     transform-origin: 50% 50%; // Set the transform-origin to the center
     animation: ${rotateClockwise} 5s linear infinite;
     margin-bottom: 5px;
+  }
+  @media (max-width: 1050px) {
+    font-size: 12px;
+  }
+  @media (max-width: 750px) {
+    display: none;
   }
 `;
 
@@ -336,30 +370,40 @@ const ContestComponentContainer = styled.div`
   border-radius: 10px;
   display: grid;
   grid-template-columns: 2fr 1fr 2fr;
-  /* gap: 2rem; */
-  @media (max-width: 1200px) {
-    .img {
-      width: 120px;
-      height: 120px;
-    }
+  .vote-icon {
+    background: transparent;
   }
   @media (max-width: 750px) {
-    .img {
-      width: 80px;
-      height: 80px;
+    .vote-icon {
+      width: 35px;
+      height:35px;
     }
   }
-  .vote-icon{
-  background:transparent;
-  
-}
+  @media (max-width: 430px) {
+    .vote-icon {
+      width: 30px;
+      height:30px;
+    }
+  }
 `;
 const Image = styled.img`
   width: 120px;
   height: 120px;
   border-radius: 100%;
-  border: 1px solid lightgray;
+  /* border: 1px solid lightgray; */
   padding: 5px;
+  @media (max-width: 1200px) {
+    width: 120px;
+    height: 120px;
+  }
+  @media (max-width: 1050px) {
+    width: 80px;
+    height: 80px;
+  }
+  @media (max-width: 750px) {
+    width: 70px;
+    height: 70px;
+  }
 `;
 const UserAContainer = styled.div`
   background-color: ${(props) => props.theme[props.currentTheme].bg2};
@@ -391,6 +435,16 @@ const Extras = styled.div`
   gap: 2rem;
   .axe-icon {
     background-color: ${(props) => props.theme[props.currentTheme].bg2};
+  }
+  @media (max-width: 750px) {
+    .axe-icon {
+      width: 25px;
+    }
+  }
+  @media (max-width: 430px) {
+    .axe-icon {
+      width: 20px;
+    }
   }
 `;
 

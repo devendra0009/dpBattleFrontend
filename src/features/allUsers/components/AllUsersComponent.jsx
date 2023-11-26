@@ -14,12 +14,13 @@ const AllUsersComponent = ({ user }) => {
      navigate(`/profile/user?id=${user._id}`);
   }
   return (
-    <AllUsersComponentContainer currentTheme={currentTheme}>
+    <AllUsersComponentContainer currentTheme={currentTheme} onClick={goToClickedUser}>
       <Image src={user.img} alt="img1" currentTheme={currentTheme} />
       <UserName currentTheme={currentTheme}>
-        {user.name.toUpperCase()} <MdVerified />
+        {user.name.toUpperCase()} 
+        <MdVerified />
       </UserName>
-      <LuEye size={30} className='eye-icon' onClick={goToClickedUser} />
+      {/* <LuEye size={30} className='eye-icon' onClick={goToClickedUser} /> */}
     </AllUsersComponentContainer>
   );
 };
@@ -28,20 +29,19 @@ const AllUsersComponentContainer = styled.div`
   padding: 1rem;
   border-radius: 10px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 8px;
-  .eye-icon{
-    background-color: ${(props) => props.theme[props.currentTheme].bg2};
-    margin: auto;
-    cursor: pointer;
-    &:hover{
-      scale: 110%;
-    }
+  cursor: pointer;
+  &:hover{
+    scale: 107%;
   }
   @media (max-width: 1050px) {
+    /* width: 100%; */
     grid-template-columns: none;
-    margin:  0 auto;
-    /* background-color: red; */
+    /* text-align: center; */
+    .eye-icon{
+      display: none;
+    }
   }
   `;
 const UserName = styled.h4`

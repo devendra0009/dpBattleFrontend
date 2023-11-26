@@ -23,7 +23,7 @@ const Container = styled.div`
     /* background-color: red; */
   }
   @media (max-width: 1050px) {
-    width: 98vw;
+    width: 95vw;
     /* background-color: red; */
   }
 `;

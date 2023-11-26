@@ -50,10 +50,26 @@ const JoinContestComponentContainer = styled.div`
     color: gray;
     font-weight: 600;
   }
+  @media (max-width:750px)
+  {
+    font-size: 16px;
+  }
+  @media (max-width:430px)
+  {
+    font-size: 14px;
+  }
 `;
 const Heading = styled.div`
   /* text-align: center; */
   font-size: 1.5rem;
+  @media (max-width:750px)
+  {
+    font-size: 20px;
+  }
+  @media (max-width:430px)
+  {
+    font-size: 18px;
+  }
 `;
 const JoinContestBody = styled.div`
   display: grid;
@@ -63,6 +79,15 @@ const JoinContestBody = styled.div`
   overflow: scroll;
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
+  @media (max-width:750px)
+  {
+    width: 90%;
+    grid-template-columns: 1fr;
+  }
+  @media (max-width:430px)
+  {
+    font-size: 16px;
+  }
 `;
 const JoinContestElement = styled.div`
   display: ${(props) =>

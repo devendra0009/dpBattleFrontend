@@ -74,7 +74,7 @@ const AllContest = () => {
     if (canGoNext) {
       setCurrentPage((prevPage) => prevPage + 1);
     } else {
-      toastWarn('Kha jana h bhai?');
+      toastWarn('Kha jana h bhai?','❓',currentTheme);
     }
   };
 
@@ -82,7 +82,7 @@ const AllContest = () => {
     if (canGoPrev) {
       setCurrentPage((prevPage) => prevPage - 1);
     } else {
-      toastWarn('Kha jana h bhai?');
+      toastWarn('Kha jana h bhai?','❓',currentTheme);
     }
   };
   const theme = currentTheme === 'dark' ? darkTheme : lightTheme;
@@ -141,20 +141,24 @@ const Options = styled.div`
     width: 50%;
     margin-top: 10px;
   }
+  @media (max-width:750px)
+  {
+    flex-direction: column;
+    .select{
+      width: 80%;
+      font-size: 15px;
+    }
+  }
+  @media (max-width:450px)
+  {
+    flex-direction: column;
+    .select{
+      width: 90%;
+      font-size: 12px;
+    }
+  }
 `;
 
-// const Select=styled.select`
-//   border: 1px solid #82ee82;
-//   cursor: pointer;
-//   background-color: #d4f7d4 ;
-//   border-radius: 10px;
-//   padding: 1rem;
-//   &:hover{
-
-//     background-color: #aaf0aa ;
-//   }
-
-// `
 const Pagination = styled.div`
   display: flex;
   justify-content: center;

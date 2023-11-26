@@ -44,30 +44,58 @@ const PersonalInfoContainer = styled.div`
   justify-content: center;
   align-items: center;
   gap: 2rem;
+  /* @media (max-width:750px)
+  {
+    gap: 1rem;
+  } */
+  @media (max-width: 430px) {
+    flex-direction: column;
+    gap: 1rem;
+  }
 `;
 
 const ProfileImage = styled.img`
   border-radius: 50%;
   /* margin-bottom: 10px; */
+  @media (max-width: 750px) {
+    width: 120px;
+    height: 120px;
+  }
+  @media (max-width: 500px) {
+    width: 80px;
+    height: 80px;
+  }
 `;
 
-const UserName = styled.h2`
+const UserName = styled.h4`
   color: ${(props) => props.theme[props.currentTheme].text2};
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  @media (max-width: 750px) {
+    font-size: 1rem;
+  }
+  /* @media (max-width:430px)
+  {
+    font-size: 16px;
+  } */
 `;
 
 const UserMid = styled.div`
   display: flex;
   justify-content: flex-start;
   gap: 1rem;
-  /* margin-bottom: 5px; */
+  font-size: 15px;
+  @media (max-width: 750px) {
+    font-size: 14px;
+  }
+  @media (max-width: 430px) {
+    font-size: 13px;
+  }
 `;
 
 const UserEmail = styled.p`
   color: gray;
-  /* margin-bottom: 5px; */
 `;
 
 const UserRole = styled.p`
@@ -100,7 +128,7 @@ const UserDetails = styled.div`
 const OngoingContest = styled.div`
   margin-top: 1rem;
   /* font-weight: bold; */
-  border-radius: 10px;
+  /* border-radius: 10px; */
   /* background-color: red; */
 `;
 
@@ -211,19 +239,23 @@ const FollowButton = styled.button`
 
 const TabContainer = styled.div`
   /* width: 400px; */
-  margin: 50px auto;
+  margin:30px auto;
+
 `;
 
 const Tabs = styled.div`
   display: flex;
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
+  padding: 0.5rem 0;
+  
 `;
 
 const TabButton = styled.button`
   flex: 1;
   padding: 10px;
-  background-color: ${(props) => (props.isactive ? '#3498db' : '#ecf0f1')};
-  color: ${(props) => (props.isactive ? '#ffffff' : '#2c3e50')};
+  border-radius: 10px;
+  background-color:${(props)=>(props.isactive ?'lightgreen': props.theme[props.currentTheme].bg )} ;
+  color: ${(props) =>  props.theme[props.currentTheme].text};
   border: none;
   cursor: pointer;
   outline: none;
@@ -234,7 +266,8 @@ const OngoingContestComponent = ({ user }) => {
   const onGoingContests = allContests.filter(
     (obj) => obj.user1 === user._id || obj.user2 === user._id
   );
-  console.log(onGoingContests, 'ongoincontest');
+  // console.log(onGoingContests, 'ongoincontest');
+  const currentTheme = useSelector(selectTheme);
   console.log(user, 'user');
   const fightingContests = onGoingContests.filter(
     (obj) => obj.status === 'fighting'
@@ -250,12 +283,14 @@ const OngoingContestComponent = ({ user }) => {
     <TabContainer>
       <Tabs>
         <TabButton
+          currentTheme={currentTheme}
           onClick={() => handleTabClick('fighting')}
           isactive={activeTab === 'fighting'}
         >
           Fighting
         </TabButton>
         <TabButton
+          currentTheme={currentTheme}
           onClick={() => handleTabClick('matching')}
           isactive={activeTab === 'matching'}
         >
@@ -328,7 +363,7 @@ const XXXContestComponentContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 1rem 0;
+  /* padding: 1rem 0; */
   overflow: scroll;
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
@@ -383,5 +418,15 @@ const Extras = styled.div`
   justify-content: space-around;
   .axe-icon {
     background-color: ${(props) => props.theme[props.currentTheme].bg2};
+  }
+  @media (max-width: 750px) {
+    .axe-icon {
+      width: 25px;
+    }
+  }
+  @media (max-width: 430px) {
+    .axe-icon {
+      width: 20px;
+    }
   }
 `;
