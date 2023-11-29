@@ -200,6 +200,7 @@ const Logo2 = styled.img`
 const RouteTags = styled.ul`
   display: flex;
   gap: 1rem;
+  font-size: 13px;
   /* background-color: red; */
   padding: 1rem;
   box-shadow: ${(props) => props.theme[props.currentTheme].border};

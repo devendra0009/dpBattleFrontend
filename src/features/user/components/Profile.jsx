@@ -106,6 +106,13 @@ const FollowStats = styled.div`
   display: flex;
   color: ${theme.textColor};
   gap: 1rem;
+  font-size: 14px;
+  @media (max-width: 750px) {
+    font-size: 14px;
+  }
+  @media (max-width: 430px) {
+    font-size: 13px;
+  }
 `;
 
 const Followers = styled.p`

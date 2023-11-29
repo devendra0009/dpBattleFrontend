@@ -52,6 +52,7 @@ const PopularUsersComponent = () => {
 
 const NamesUser = styled.div`
   width: 90%;
+  font-size: 14px;
   border-radius: 10px;
   height: 400px;
   overflow-y: scroll;
@@ -147,7 +148,9 @@ const PopularUserElementContainer = styled.div`
   /* border-bottom: 1px solid lightgray; */
   border-radius: 10px;
   h3 {
+    font-size: 18px;
     background-color: ${(props) => props.theme[props.currentTheme].bg};
+    color: orange;
   }
   h4 {
     background-color: ${(props) => props.theme[props.currentTheme].bg};

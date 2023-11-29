@@ -30,7 +30,7 @@ const Register = () => {
     // userData.append('role', data.role);
     userData.append('file', data.file[0]);
     console.log(userData);
-    dispatch(registerUserAsync(userData));
+    await dispatch(registerUserAsync(userData));
     // console.log('submiting');
   };
   return (
@@ -174,6 +174,7 @@ const PasswordContainer = styled.div`
   .icon {
     position: absolute;
     right: 10px;
+    background: transparent;
   }
 `;
 const ExtraContainer = styled.div`
@@ -185,6 +186,7 @@ const ExtraContainer = styled.div`
   .icon {
     position: absolute;
     right: 10px;
+    backgrountransparentd
   }
 `;
 

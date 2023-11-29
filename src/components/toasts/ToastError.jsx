@@ -1,6 +1,6 @@
 import { toast } from 'react-toastify';
 
-export const toastError = (msg, mode) => {
+export const toastError = (msg, icon,currentTheme) => {
   console.log(msg);
   toast.error(msg, {
     position: 'top-left',
@@ -10,5 +10,7 @@ export const toastError = (msg, mode) => {
     pauseOnHover: true,
     draggable: true,
     progress: 0,
+    theme:currentTheme==='light'?'light':'dark',
+    icon: icon
   });
 };

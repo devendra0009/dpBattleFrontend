@@ -28,7 +28,7 @@ const Login = () => {
   const onSubmit = async (data) => {
     // Handle login logic here
     // await new Promise((resolve) => setTimeout(resolve, 1000));
-    dispatch(loginUserAsync(data));
+    await dispatch(loginUserAsync(data));
     console.log('submiting');
   };
   return (
@@ -108,6 +108,7 @@ const PasswordContainer = styled.div`
   border-radius: 10px;
   .icon {
     position: absolute;
+    background: transparent;
     right: 10px;
   }
 `;

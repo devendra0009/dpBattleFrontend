@@ -21,8 +21,14 @@ export const Form = styled.form`
     border-radius: 8px;
     text-align: center;
     color: black;
+    font-size: 13px;
+    font-weight: bold;
     padding: 1rem;
     border: 1px solid blue;
+    &:hover{
+      
+      background-color: ${(props) => props.theme[props.currentTheme==='light'?'dark':'light'].bgBlue};
+    }
   }
 `;
 

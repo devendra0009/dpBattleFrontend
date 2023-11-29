@@ -5,6 +5,9 @@ import {
   logoutUser,
   registerUser,
 } from './authApi';
+import { toastError } from '../../components/toasts/ToastError';
+import { selectTheme } from '../theme/themeSlice';
+import { toastSuccess } from '../../components/toasts/ToastSuccess';
 
 const initialState = {
   loggedInUserToken: null,
@@ -16,28 +19,30 @@ const initialState = {
 
 export const registerUserAsync = createAsyncThunk(
   'auth/registerUser',
-  async (userData, { rejectWithValue }) => {
+  async (userData, { rejectWithValue, getState }) => {
+    const state = getState();
+    const currentTheme = selectTheme(state);
     try {
       const response = await registerUser(userData);
-      return response.data;
+      return {resData:response.data,currentTheme};
     } catch (error) {
       // console.log(error);
-      return rejectWithValue(error);
+      return rejectWithValue({error:error,currentTheme});
     }
   }
 );
 export const loginUserAsync = createAsyncThunk(
   'auth/loginUser',
-  async (userData, { rejectWithValue }) => {
+  async (userData, { rejectWithValue, getState }) => {
     // console.log(userData);
+    const state = getState();
+    const currentTheme = selectTheme(state);
     try {
       const response = await loginUser(userData);
-      // response.error={"msg":"falsy"}
-      // console.log(response.data, 'res');
-      return response.data;
+      return {resData:response.data,currentTheme};
     } catch (error) {
       // console.log(error);
-      return rejectWithValue(error);
+      return rejectWithValue({error:error,currentTheme});
     }
   }
 );
@@ -67,36 +72,42 @@ export const authSlice = createSlice({
       })
       .addCase(registerUserAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.loggedInUserToken = action.payload.token;
+        state.loggedInUserToken = action.payload.resData.token;
         state.userAuthenticated = true;
         state.error=null
         // set token to local
-        // localStorage.setItem('auth-token',)
-        localStorage.setItem('auth-token',action.payload.token)
+        localStorage.setItem('auth-token',action.payload.resData.token)
+        const currentTheme = action.payload.currentTheme;
+        toastSuccess('Registered Successfully!','✅',currentTheme)
       })
       .addCase(registerUserAsync.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload.error;
+        const currentTheme = action.payload.currentTheme;
+        toastError(state.error.error.msg,'❌',currentTheme)
       })
       .addCase(loginUserAsync.pending, (state) => {
         state.loading = true;
       })
       .addCase(loginUserAsync.fulfilled, (state, action) => {
-        console.log(action);
+        // console.log(action);
         state.loading = false;
         // console.log(action.payload);
-        state.loggedInUserToken = action.payload.token;
+        state.loggedInUserToken = action.payload.resData.token;
         state.userAuthenticated = true;
         state.error=null
         // console.log(action.payload.token);
         // set token to local
-        localStorage.setItem('auth-token',action.payload.token)
+        localStorage.setItem('auth-token',action.payload.resData.token)
+        const currentTheme = action.payload.currentTheme;
+        toastSuccess('Logged In Successfully!','✅',currentTheme)
       })
       .addCase(loginUserAsync.rejected, (state, action) => {
-        // console.log(action);
-        state.loading = false;
-        state.error = action.payload;
         console.log(action);
+        state.loading = false;
+        state.error = action.payload.error;
+        const currentTheme = action.payload.currentTheme;
+        toastError(state.error.error.msg,'❌',currentTheme)
       })
       .addCase(authenticateUserAsync.pending, (state) => {
         state.loading = true;

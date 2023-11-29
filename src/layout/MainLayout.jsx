@@ -15,16 +15,12 @@ const MainLayout = ({ children }) => {
 
 const Container = styled.div`
   width: 80vw;
-  /* min-height: 80vh; */
-  /* background-color: aquamarine; */
   margin: 0 auto;
   @media (max-width: 1200px) {
     width: 90vw;
-    /* background-color: red; */
   }
   @media (max-width: 1050px) {
     width: 95vw;
-    /* background-color: red; */
   }
 `;
 

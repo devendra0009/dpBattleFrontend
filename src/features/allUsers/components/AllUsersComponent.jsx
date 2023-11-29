@@ -45,6 +45,7 @@ const AllUsersComponentContainer = styled.div`
   }
   `;
 const UserName = styled.h4`
+font-size: 13px;
   background-color: ${(props) => props.theme[props.currentTheme].bg2};
   color: ${(props) => props.theme[props.currentTheme].text2};
   display: flex;
