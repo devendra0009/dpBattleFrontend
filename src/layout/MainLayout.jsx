@@ -1,7 +1,8 @@
-import React from 'react';
-import Navbar from '../components/nav/Navbar';
-import Footer from '../components/footer/Footer';
-import styled from 'styled-components';
+import React from "react";
+import Navbar from "../components/nav/Navbar";
+import Footer from "../components/footer/Footer";
+import ModalManager from "../components/modals/ModalManager";
+import styled from "styled-components";
 
 const MainLayout = ({ children }) => {
   return (
@@ -9,6 +10,7 @@ const MainLayout = ({ children }) => {
       <Navbar />
       <Content>{children}</Content>
       <Footer />
+      <ModalManager />
     </Container>
   );
 };
@@ -25,7 +27,7 @@ const Container = styled.div`
 `;
 
 const Content = styled.div`
-  min-height: 72vh; 
+  min-height: 72vh;
 `;
 
 export default MainLayout;

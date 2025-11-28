@@ -1,25 +1,32 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import styled from 'styled-components';
-import { selectAllContests } from '../contestSlice';
-import JoinContestItem from './JoinContestItem';
-import { CgBoy } from 'react-icons/cg';
-import { selectUserInfo } from '../../user/userSlice';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components";
+import { fetchAllContestAsync, selectAllContests } from "../contestSlice";
+import JoinContestItem from "./JoinContestItem";
+import { CgBoy } from "react-icons/cg";
+import { selectUserInfo } from "../../user/userSlice";
 
 const JoinContestComponent = () => {
+  const dispatch = useDispatch();
   const allContests = useSelector(selectAllContests);
   const currentUser = useSelector(selectUserInfo);
-  const anyMatchingContest = allContests.some(
-    (contest) =>
-      contest.status === 'matching' && contest.user1 !== currentUser._id
-  );
+  const anyMatchingContest =
+    allContests?.length > 0 &&
+    allContests?.some(
+      (contest) =>
+        contest.status === "matching" && contest.user1 !== currentUser._id
+    );
+
+  useEffect(() => {
+    dispatch(fetchAllContestAsync({ page: 1, limit: 10, status: "matching" }));
+  }, []);
   return (
     <JoinContestComponentContainer>
       <Heading>Join a Contest</Heading>
-      {anyMatchingContest ? (                                                                                                                                   
+      {anyMatchingContest ? (
         <JoinContestBody>
           {allContests &&
-            allContests.map((contest, idx) => (                           
+            allContests.map((contest, idx) => (
               <>
                 {
                   <JoinContestElement
@@ -50,24 +57,20 @@ const JoinContestComponentContainer = styled.div`
     color: gray;
     font-weight: 600;
   }
-  @media (max-width:750px)
-  {
+  @media (max-width: 750px) {
     font-size: 16px;
   }
-  @media (max-width:430px)
-  {
+  @media (max-width: 430px) {
     font-size: 14px;
   }
 `;
 const Heading = styled.div`
   /* text-align: center; */
   font-size: 1.5rem;
-  @media (max-width:750px)
-  {
+  @media (max-width: 750px) {
     font-size: 20px;
   }
-  @media (max-width:430px)
-  {
+  @media (max-width: 430px) {
     font-size: 18px;
   }
 `;
@@ -79,19 +82,17 @@ const JoinContestBody = styled.div`
   overflow: scroll;
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
-  @media (max-width:750px)
-  {
+  @media (max-width: 750px) {
     width: 90%;
     grid-template-columns: 1fr;
   }
-  @media (max-width:430px)
-  {
+  @media (max-width: 430px) {
     font-size: 16px;
   }
 `;
 const JoinContestElement = styled.div`
   display: ${(props) =>
-    props.status === 'matching' && !props.sameUser ? 'block' : 'none'};
+    props.status === "matching" && !props.sameUser ? "block" : "none"};
 `;
 
 export default JoinContestComponent;

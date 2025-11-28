@@ -1,18 +1,29 @@
-import axios from 'axios';
-import { getToken } from '../../utils/constants';
+import axios from "axios";
+import { getToken } from "../../utils/constants";
 const BASE_URL = import.meta.env.VITE_BASE_BACKEND_URL;
 
-export const fetchAllContest = () => {
+export const fetchAllContest = (params = {}) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await axios.get(
-        `${BASE_URL}/api/contest/getAllContests`,
-        {
-          headers: {
-            'auth-token': getToken(),
-          },
-        }
-      );
+      // Build query string from params
+      const queryParams = new URLSearchParams();
+      if (params.page) queryParams.append("page", params.page);
+      if (params.limit) queryParams.append("limit", params.limit);
+      if (params.status) queryParams.append("status", params.status);
+      if (params.type) queryParams.append("type", params.type);
+      if (params.user) queryParams.append("user", params.user);
+      if (params.q) queryParams.append("q", params.q);
+
+      const queryString = queryParams.toString();
+      const url = `${BASE_URL}/api/contest/getAllContests${
+        queryString ? `?${queryString}` : ""
+      }`;
+
+      const response = await axios.get(url, {
+        headers: {
+          "auth-token": getToken(),
+        },
+      });
       const data = response.data;
       //   console.log(response);
       // only return relevant information
@@ -31,7 +42,7 @@ export const createContest = (contestData) => {
         contestData,
         {
           headers: {
-            'auth-token': getToken(),
+            "auth-token": getToken(),
           },
         }
       );
@@ -53,7 +64,7 @@ export const joinContest = (formData) => {
         formData.data,
         {
           headers: {
-            'auth-token': getToken(),
+            "auth-token": getToken(),
           },
         }
       );
@@ -75,7 +86,7 @@ export const updateContest = (updatedData) => {
         updatedData,
         {
           headers: {
-            'auth-token': getToken(),
+            "auth-token": getToken(),
           },
         }
       );
@@ -97,7 +108,7 @@ export const createContestWithFriend = (contestData) => {
         contestData,
         {
           headers: {
-            'auth-token': getToken(),
+            "auth-token": getToken(),
           },
         }
       );

@@ -1,40 +1,49 @@
-import React, { useState } from 'react';
-import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
-import { useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectTheme } from '../../theme/themeSlice';
-import { Form } from '../../../styled-components/forms/Form';
-import { Container } from '../../../styled-components/container/Container';
-import styled from 'styled-components';
-import { Input1 } from '../../../styled-components/inputs/Input';
-import { Button1 } from '../../../styled-components/buttons/Button';
-import { Link } from 'react-router-dom';
-import { registerUserAsync } from '../authSlice';
+import React, { useState } from "react";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { selectTheme } from "../../theme/themeSlice";
+import { Form } from "../../../styled-components/forms/Form";
+import { Container } from "../../../styled-components/container/Container";
+import styled from "styled-components";
+import { Input1 } from "../../../styled-components/inputs/Input";
+import { Button1 } from "../../../styled-components/buttons/Button";
+import { Link } from "react-router-dom";
+import { registerUserAsync, selectUserAuthenticated } from "../authSlice";
+import { useEffect } from "react";
 
-const Register = () => {
+const Register = ({ onSuccess }) => {
   const [showP, setShowP] = useState(false);
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm();
   const currentTheme = useSelector(selectTheme);
+  const userAuthenticated = useSelector(selectUserAuthenticated);
 
   const onSubmit = async (data) => {
     // Handle login logic here
     let userData = new FormData();
-    userData.append('name', data.name);
-    userData.append('email', data.email);
-    userData.append('password', data.password);
+    userData.append("name", data.name);
+    userData.append("email", data.email);
+    userData.append("password", data.password);
     // userData.append('role', data.role);
-    userData.append('file', data.file[0]);
+    userData.append("file", data.file[0]);
     console.log(userData);
     await dispatch(registerUserAsync(userData));
     // console.log('submiting');
   };
+
+  // Close modal on successful registration
+  useEffect(() => {
+    if (userAuthenticated && onSuccess) {
+      onSuccess();
+    }
+  }, [userAuthenticated, onSuccess]);
   return (
-    <Container>
+    <Container $isModal={!!onSuccess}>
       <Form currentTheme={currentTheme} onSubmit={handleSubmit(onSubmit)}>
         <InputContainer className="name" currentTheme={currentTheme}>
           Name
@@ -43,8 +52,8 @@ const Register = () => {
               currentTheme={currentTheme}
               id="name"
               type="text"
-              {...register('name', {
-                required: 'Name is required',
+              {...register("name", {
+                required: "Name is required",
               })}
             />
           </ExtraContainer>
@@ -56,11 +65,11 @@ const Register = () => {
             <Input1
               currentTheme={currentTheme}
               id="email"
-              {...register('email', {
-                required: 'Email is required',
+              {...register("email", {
+                required: "Email is required",
                 pattern: {
                   value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-                  message: 'Invalid Email',
+                  message: "Invalid Email",
                 },
               })}
             />
@@ -73,15 +82,15 @@ const Register = () => {
             <Input1
               currentTheme={currentTheme}
               id="password"
-              {...register('password', {
-                required: 'Password is required',
+              {...register("password", {
+                required: "Password is required",
                 pattern: {
                   value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
                   message:
-                    'Must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, and 1 number.',
+                    "Must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, and 1 number.",
                 },
               })}
-              type={showP ? 'text' : 'password'}
+              type={showP ? "text" : "password"}
             />
             {!showP ? (
               <AiFillEyeInvisible
@@ -105,12 +114,12 @@ const Register = () => {
             <Input1
               currentTheme={currentTheme}
               id="confirmPassword"
-              {...register('confirmPassword', {
-                required: 'Confrim Password is required',
+              {...register("confirmPassword", {
+                required: "Confrim Password is required",
                 validate: (val, formVal) =>
-                  val === formVal.password || 'Password not Matching',
+                  val === formVal.password || "Password not Matching",
               })}
-              type={showP ? 'text' : 'password'}
+              type={showP ? "text" : "password"}
             />
             {!showP ? (
               <AiFillEyeInvisible
@@ -136,7 +145,7 @@ const Register = () => {
               type="file"
               id={`file`}
               {...register(`file`, {
-                required: 'Profile picture is required',
+                required: "Profile picture is required",
               })}
             />
           </ExtraContainer>
@@ -148,9 +157,9 @@ const Register = () => {
           type="submit"
           disabled={isSubmitting}
         >
-          {isSubmitting ? 'Registering...' : 'Register'}
+          {isSubmitting ? "Registering..." : "Register"}
         </Button1>
-        <Link className="link" to="/login">
+        <Link className="link" to={onSuccess ? "/?modal=login" : "/login"}>
           Login
         </Link>
       </Form>

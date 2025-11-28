@@ -1,33 +1,43 @@
-import React from 'react'
-import Register from '../features/auth/components/Register'
-import { useSelector } from 'react-redux';
-import { selectUserAuthenticated } from '../features/auth/authSlice';
-import styled from 'styled-components';
-import ThemeToggler from '../components/theme/ThemeToggler';
-import { Navigate } from 'react-router-dom';
+import React, { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectUserAuthenticated } from "../features/auth/authSlice";
+import Register from "../features/auth/components/Register";
+import Modal from "../components/modals/Modal";
 
 const RegisterPage = () => {
   const userAuthenticated = useSelector(selectUserAuthenticated);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const isModal = searchParams.get("modal") === "register";
 
-  return (
-    <>
-      {
-        userAuthenticated  && <Navigate to='/' />
-      }
-      <div>
-        <FloatingToggler>
-          <ThemeToggler />
-        </FloatingToggler>
-        <Register />
-      </div>
-    </>
-  );
-}
+  const closeModal = () => {
+    searchParams.delete("modal");
+    setSearchParams(searchParams, { replace: true });
+  };
 
-const FloatingToggler = styled.div`
-  position: absolute;
-  left: 49%;
-  top: 10%;
-`;
+  useEffect(() => {
+    // If authenticated and modal is open, close it
+    if (userAuthenticated && isModal) {
+      closeModal();
+    }
+  }, [userAuthenticated, isModal]);
 
-export default RegisterPage
+  // If it's a modal, show modal version
+  if (isModal) {
+    return (
+      <Modal isOpen={true} onClose={closeModal} title="Register">
+        <Register onSuccess={closeModal} />
+      </Modal>
+    );
+  }
+
+  // If authenticated, don't show register page
+  if (userAuthenticated) {
+    return null;
+  }
+
+  // Full page version (fallback)
+  return <Register />;
+};
+
+export default RegisterPage;

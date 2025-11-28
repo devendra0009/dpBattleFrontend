@@ -2,48 +2,58 @@
 // npm install react react-dom react-hook-form
 
 // Login.js
-import React, { useState } from 'react';
-import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
-import { useForm } from 'react-hook-form';
-import { Form } from '../../../styled-components/forms/Form';
-import { Container } from '../../../styled-components/container/Container';
-import { Button1 } from '../../../styled-components/buttons/Button';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectTheme } from '../../theme/themeSlice';
-import { Input1 } from '../../../styled-components/inputs/Input';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { loginUserAsync } from '../authSlice';
+import React, { useState } from "react";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { useForm } from "react-hook-form";
+import { Form } from "../../../styled-components/forms/Form";
+import { Container } from "../../../styled-components/container/Container";
+import { Button1 } from "../../../styled-components/buttons/Button";
+import { useDispatch, useSelector } from "react-redux";
+import { selectTheme } from "../../theme/themeSlice";
+import { Input1 } from "../../../styled-components/inputs/Input";
+import styled from "styled-components";
+import { Link, useNavigate } from "react-router-dom";
+import { loginUserAsync, selectUserAuthenticated } from "../authSlice";
+import { useEffect } from "react";
 
-const Login = () => {
+const Login = ({ onSuccess }) => {
   const [showP, setShowP] = useState(false);
   const {
     register,
     handleSubmit,
-    formState: { errors,isSubmitting },
+    formState: { errors, isSubmitting },
   } = useForm();
   const currentTheme = useSelector(selectTheme);
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
+  const userAuthenticated = useSelector(selectUserAuthenticated);
 
   const onSubmit = async (data) => {
     // Handle login logic here
     // await new Promise((resolve) => setTimeout(resolve, 1000));
     await dispatch(loginUserAsync(data));
-    console.log('submiting');
+    console.log("submiting");
   };
+
+  // Close modal on successful login
+  useEffect(() => {
+    if (userAuthenticated && onSuccess) {
+      onSuccess();
+    }
+  }, [userAuthenticated, onSuccess]);
   return (
-    <Container>
+    <Container $isModal={!!onSuccess}>
       <Form currentTheme={currentTheme} onSubmit={handleSubmit(onSubmit)}>
         <InputContainer className="email" currentTheme={currentTheme}>
           Email
           <div>
-            <Input1 currentTheme={currentTheme}
+            <Input1
+              currentTheme={currentTheme}
               id="email"
-              {...register('email', {
-                required: 'Email is required',
+              {...register("email", {
+                required: "Email is required",
                 pattern: {
                   value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-                  message: 'Invalid Email',
+                  message: "Invalid Email",
                 },
               })}
             />
@@ -53,17 +63,18 @@ const Login = () => {
         <InputContainer currentTheme={currentTheme} className="password">
           Password
           <PasswordContainer>
-            <Input1 currentTheme={currentTheme}
+            <Input1
+              currentTheme={currentTheme}
               id="password"
-              {...register('password', {
-                required: 'Password is required',
+              {...register("password", {
+                required: "Password is required",
                 pattern: {
                   value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
                   message:
-                    'Must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, and 1 number.',
+                    "Must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, and 1 number.",
                 },
               })}
-              type={showP ? 'text' : 'password'}
+              type={showP ? "text" : "password"}
             />
             {!showP ? (
               <AiFillEyeInvisible
@@ -82,11 +93,15 @@ const Login = () => {
           {errors.password && <p>{errors.password.message}</p>}
         </InputContainer>
 
-        <Button1 currentTheme={currentTheme} disabled={isSubmitting}
-        >
-          {isSubmitting ? 'Logging in...' : 'Login'}
+        <Button1 currentTheme={currentTheme} disabled={isSubmitting}>
+          {isSubmitting ? "Logging in..." : "Login"}
         </Button1>
-        <Link className="link" to='/register'>Register</Link>
+        <Link
+          className="link"
+          to={onSuccess ? "/?modal=register" : "/register"}
+        >
+          Register
+        </Link>
       </Form>
     </Container>
   );
@@ -114,6 +129,3 @@ const PasswordContainer = styled.div`
 `;
 
 export default Login;
-
-
-

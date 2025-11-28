@@ -1,23 +1,23 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   deleteUser,
   fetchUserInfo,
   updateFollowerFollowing,
   updateUser,
-} from './userApi';
-import { toastSuccess } from '../../components/toasts/ToastSuccess';
-import { toastError } from '../../components/toasts/ToastError';
-import { selectTheme } from '../theme/themeSlice';
+} from "./userApi";
+import { toastSuccess } from "../../components/toasts/ToastSuccess";
+import { toastError } from "../../components/toasts/ToastError";
+import { selectTheme } from "../theme/themeSlice";
 
 const initialState = {
   userInfo: null, // user info m sb ajaega uske followers, following, no. of votes and all
-  searchedUser: '',
+  searchedUser: "",
   loading: false,
   error: null,
 };
 
 export const fetchUserInfoAsync = createAsyncThunk(
-  'user/fetchUserInfo',
+  "user/fetchUserInfo",
   async (_, { rejectWithValue, getState }) => {
     // console.log(userId);
     try {
@@ -32,7 +32,7 @@ export const fetchUserInfoAsync = createAsyncThunk(
 );
 
 export const updateUserAsync = createAsyncThunk(
-  'user/updateUser',
+  "user/updateUser",
   async (updateData, { rejectWithValue, getState }) => {
     try {
       const state = getState();
@@ -45,7 +45,7 @@ export const updateUserAsync = createAsyncThunk(
   }
 );
 export const updateFollowerFollowingAsync = createAsyncThunk(
-  'user/updateFollowerFollowing',
+  "user/updateFollowerFollowing",
   async (updateData, { rejectWithValue, getState }) => {
     try {
       const state = getState();
@@ -53,14 +53,16 @@ export const updateFollowerFollowingAsync = createAsyncThunk(
       const response = await updateFollowerFollowing(updateData);
       return { resData: response.data, currentTheme };
     } catch (error) {
-      return rejectWithValue(error);
+      const state = getState();
+      const currentTheme = selectTheme(state);
+      return rejectWithValue({ error: error.error || error, currentTheme });
     }
   }
 );
 
 // on deletion of user clear the state and remove token from local
 export const deleteUserAsync = createAsyncThunk(
-  'user/deleteUser',
+  "user/deleteUser",
   async (_, { rejectWithValue, getState }) => {
     try {
       const state = getState();
@@ -74,7 +76,7 @@ export const deleteUserAsync = createAsyncThunk(
 );
 
 export const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     clearUserState: (state) => (state = initialState),
@@ -84,7 +86,7 @@ export const userSlice = createSlice({
     },
     clearSearchedUser: (state, action) => {
       // console.log(action);
-      state.searchedUser = '';
+      state.searchedUser = "";
     },
   },
 
@@ -124,26 +126,41 @@ export const userSlice = createSlice({
       .addCase(updateFollowerFollowingAsync.fulfilled, (state, action) => {
         console.log(action.payload);
         state.loading = false;
-        const prevFollowerCount = state.userInfo.following;
-        state.userInfo = action.payload.resData.updatedUser;
-        console.log(state.userInfo);
+
+        if (action.payload.resData?.updatedUser) {
+          const prevFollowerCount = state.userInfo?.following?.length || 0;
+          state.userInfo = action.payload.resData.updatedUser;
+          console.log(state.userInfo);
+          const currFollowerCount = state.userInfo?.following?.length || 0;
+          const currentTheme = action.payload.currentTheme;
+          toastSuccess(
+            `${
+              prevFollowerCount < currFollowerCount
+                ? "User followed !"
+                : "User Unfollowed !"
+            }`,
+            "🚀",
+            currentTheme
+          );
+        }
+
+        if (action.payload.resData?.updatedTargetUser) {
+          // Update the target user in allUsers list if it exists
+          // This is handled by updateAllUsers action in Profile component
+        }
+
         state.error = null;
-        const currFollowerCount = state.userInfo.following;
-        const currentTheme = action.payload.currentTheme;
-        toastSuccess(
-          `${
-            prevFollowerCount < currFollowerCount
-              ? 'User followed !'
-              : 'User Unfollowed !'
-          }`,
-          '🚀',
-          currentTheme
-        );
       })
       .addCase(updateFollowerFollowingAsync.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.error.msg;
-        toastError(action.payload.error.msg);
+        const errorMsg =
+          action.payload?.error?.msg ||
+          action.payload?.error ||
+          action.error?.message ||
+          "Failed to update follow status";
+        state.error = errorMsg;
+        const currentTheme = action.payload?.currentTheme || "light";
+        toastError(errorMsg, "❌", currentTheme);
       })
       .addCase(deleteUserAsync.pending, (state) => {
         state.loading = true;
@@ -155,7 +172,7 @@ export const userSlice = createSlice({
         state.searchedUser = null;
         state.error = null;
         const currentTheme = action.payload.currentTheme;
-        toastSuccess('User Deleted !', '❎', currentTheme);
+        toastSuccess("User Deleted !", "❎", currentTheme);
         // remove token from local
       })
       .addCase(deleteUserAsync.rejected, (state, action) => {

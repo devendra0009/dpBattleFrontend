@@ -1,32 +1,37 @@
 // import React from 'react'
-import styled from 'styled-components';
-import ThemeToggler from '../theme/ThemeToggler';
-import logo from '../../../public/assets/dpbattleicon.jpg';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { selectTheme } from '../../features/theme/themeSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { IoMdExit } from 'react-icons/io';
-import { logoutUserAsync } from '../../features/auth/authSlice';
-import { SearchInput } from '../../styled-components/inputs/Input';
-import { MdOutlinePersonSearch } from 'react-icons/md';
+import styled from "styled-components";
+import ThemeToggler from "../theme/ThemeToggler";
+import logo from "../../../public/assets/dpbattleicon.jpg";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { selectTheme } from "../../features/theme/themeSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { IoMdExit } from "react-icons/io";
+import {
+  logoutUserAsync,
+  selectUserAuthenticated,
+} from "../../features/auth/authSlice";
+import { SearchInput } from "../../styled-components/inputs/Input";
+import { MdOutlinePersonSearch } from "react-icons/md";
 import {
   clearSearchedUser,
   clearUserState,
   selectSearchedUser,
   setSearchedUser,
-} from '../../features/user/userSlice';
-import SearchedUsers from '../../features/allUsers/components/SearchedUsers';
-import { MdClear } from 'react-icons/md';
+} from "../../features/user/userSlice";
+import SearchedUsers from "../../features/allUsers/components/SearchedUsers";
+import { MdClear } from "react-icons/md";
+import { Button1 } from "../../styled-components/buttons/Button";
 
 const navigation = [
-  { name: 'Home', to: '/' },
-  { name: 'Create Contest', to: '/create-contest' },
-  { name: 'Join Contest', to: '/join-contest' },
-  { name: 'Populars', to: '/popular-users' },
-  { name: 'Your profile', to: '/profile' },
+  { name: "Home", to: "/" },
+  { name: "Create Contest", to: "/create-contest" },
+  { name: "Join Contest", to: "/join-contest" },
+  { name: "Populars", to: "/popular-users" },
+  { name: "Your profile", to: "/profile" },
 ];
 
 const Navbar = (props) => {
+  const userAuthenticated = useSelector(selectUserAuthenticated);
   const currentTheme = useSelector(selectTheme);
   const searchedUser = useSelector(selectSearchedUser);
   const navigate = useNavigate();
@@ -35,11 +40,14 @@ const Navbar = (props) => {
   const handleLogout = async () => {
     // console.log('logout');
     // console.log('logout');
-    // <Navigate to='/login'/>
     dispatch(logoutUserAsync());
     dispatch(clearUserState());
-    navigate('/login');
-    console.log('cleared user');
+    // Stay on current page, just update the UI
+    console.log("cleared user");
+  };
+  const handleLogin = async () => {
+    navigate("/?modal=login");
+    // console.log("cleared user");
   };
   const handleChange = (e) => {
     // console.log(e.target.value);
@@ -54,18 +62,23 @@ const Navbar = (props) => {
         <Logo src={logo} />
       </Link>
       <MidNav>
-        <SearchBar>
+        {/* <SearchBar>
           <SearchInput
             placeholder="Enter user's email"
             onChange={(e) => handleChange(e)}
-            value={searchedUser === null ? '' : searchedUser}
+            value={searchedUser === null ? "" : searchedUser}
           />
           <div className="icons-container">
-            <MdClear className="clear-icon" size={25} onClick={handleClear} fill='red'/>
+            <MdClear
+              className="clear-icon"
+              size={25}
+              onClick={handleClear}
+              fill="red"
+            />
             <MdOutlinePersonSearch className="icon" size={25} />
           </div>
-          {searchedUser && searchedUser !== '' && <SearchedUsers />}
-        </SearchBar>
+          {searchedUser && searchedUser !== "" && <SearchedUsers />}
+        </SearchBar> */}
         <RouteTags currentTheme={currentTheme}>
           {navigation.map((item, idx) => (
             <RouteTag key={idx}>
@@ -80,7 +93,13 @@ const Navbar = (props) => {
         <Link to="/">
           <Logo2 src={logo} />
         </Link>
-        <IoMdExit size={30} className="exit" onClick={handleLogout} />
+        {userAuthenticated ? (
+          <IoMdExit size={30} className="exit" onClick={handleLogout} />
+        ) : (
+          <Button1 onClick={handleLogin}>
+            Login
+          </Button1>
+        )}
         <ThemeToggler />
       </IconWrapper>
     </NavContainer>
@@ -129,7 +148,6 @@ const SearchBar = styled.div`
         width: 20px;
         height: auto;
         /* size: 12px; */
-        
       }
       .icon {
         width: 20px;
@@ -146,9 +164,8 @@ const IconWrapper = styled.div`
   .exit {
     cursor: pointer;
   }
-  @media (max-width:430px)
-  {
-    .exit{
+  @media (max-width: 430px) {
+    .exit {
       width: 25px;
     }
   }
@@ -168,8 +185,7 @@ const NavContainer = styled.div`
     gap: 1rem;
     font-size: 14px;
   }
-  @media (max-width:430px)
-  {
+  @media (max-width: 430px) {
     font-size: 13px;
   }
 `;
@@ -182,7 +198,7 @@ const Logo = styled.img`
   @media (max-width: 750px) {
     display: none;
   }
-  `;
+`;
 const Logo2 = styled.img`
   width: 3rem;
   height: 3rem;

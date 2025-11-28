@@ -1,19 +1,21 @@
-import { createAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchAllUsers } from './allUsersApi';
+import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { fetchAllUsers } from "./allUsersApi";
 
 const initialState = {
   allUsersInfo: null,
+  pagination: null,
   loading: false,
   error: null,
   selectedPopularUserProfile: null,
+  hasMore: true, // For infinite loading
 };
 
 export const fetchAllUsersAsync = createAsyncThunk(
-  'allUsers/fetchAllUsers',
-  async (_, { rejectWithValue }) => {
+  "allUsers/fetchAllUsers",
+  async (params = {}, { rejectWithValue }) => {
     try {
-      const response = await fetchAllUsers();
-      return response.data;
+      const response = await fetchAllUsers(params);
+      return { resData: response.data, append: params.append || false };
     } catch (error) {
       // console.log(error);
       return rejectWithValue(error);
@@ -22,7 +24,7 @@ export const fetchAllUsersAsync = createAsyncThunk(
 );
 
 export const updateAllUsers = createAction(
-  'allUsers/updateAllUsers',
+  "allUsers/updateAllUsers",
   (updatedUser) => {
     return {
       payload: updatedUser,
@@ -31,7 +33,7 @@ export const updateAllUsers = createAction(
 );
 
 export const allUsersSlice = createSlice({
-  name: 'allUsers',
+  name: "allUsers",
   initialState,
   reducers: {
     setSelectedPopularUserProfile: (state, action) => {
@@ -47,7 +49,27 @@ export const allUsersSlice = createSlice({
       .addCase(fetchAllUsersAsync.fulfilled, (state, action) => {
         console.log(action.payload);
         state.loading = false;
-        state.allUsersInfo = action.payload.users.reverse();
+
+        if (
+          action.payload.append &&
+          state.allUsersInfo &&
+          Array.isArray(state.allUsersInfo)
+        ) {
+          // Append new users for infinite loading
+          state.allUsersInfo = [
+            ...state.allUsersInfo,
+            ...(action.payload.resData.users || []),
+          ];
+        } else {
+          // Replace users for new search/filter
+          state.allUsersInfo = action.payload.resData.users || [];
+        }
+
+        state.pagination = action.payload.resData.pagination;
+        state.hasMore =
+          action.payload.resData.pagination &&
+          action.payload.resData.pagination.currentPage <
+            action.payload.resData.pagination.totalPages;
         state.error = null;
         // remove token from local
       })
@@ -75,6 +97,8 @@ export const allUsersSlice = createSlice({
 export const { setSelectedPopularUserProfile } = allUsersSlice.actions;
 
 export const selectAllUsers = (state) => state.allUsers.allUsersInfo;
+export const selectUsersPagination = (state) => state.allUsers.pagination;
+export const selectUsersHasMore = (state) => state.allUsers.hasMore;
 export const selectPopularUserProfile = (state) =>
   state.allUsers.selectedPopularUserProfile;
 export const selectAllUsersError = (state) => state.allUsers.error;

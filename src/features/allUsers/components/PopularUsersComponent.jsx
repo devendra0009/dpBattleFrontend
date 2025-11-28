@@ -1,52 +1,121 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components";
 import {
-  selectAllUsers,
   selectPopularUserProfile,
   setSelectedPopularUserProfile,
-} from '../allUsersSlice';
-import { selectTheme } from '../../theme/themeSlice';
-import { LuEye } from 'react-icons/lu';
-import Profile from '../../user/components/Profile';
+  fetchAllUsersAsync,
+  selectAllUsersLoading,
+} from "../allUsersSlice";
+import { selectTheme } from "../../theme/themeSlice";
+import Profile from "../../user/components/Profile";
+import { ITEMS_PER_PAGE } from "../../../utils/constants";
 
 const PopularUsersComponent = () => {
   const dispatch = useDispatch();
   const currentTheme = useSelector(selectTheme);
-  // map the list of popular users, displaying their profile image, name, no. of votes they got, no. of contest they won, winning percentage,
-  const allUsers = useSelector(selectAllUsers);
+  const loading = useSelector(selectAllUsersLoading);
   const selectedPopularUserProfile = useSelector(selectPopularUserProfile);
-  // put thsese acc to votes sorted
-  // console.log('pop user render',selectedUser,allUsers);
+  const [popularUsers, setPopularUsers] = useState([]);
+
+  // Fetch popular users sorted by followers (descending)
   useEffect(() => {
-    if (!selectedPopularUserProfile) {
-      dispatch(setSelectedPopularUserProfile(allUsers && allUsers[0]));
-    }
-  }, []);
+    const fetchPopularUsers = async () => {
+      const result = await dispatch(
+        fetchAllUsersAsync({
+          page: 1,
+          limit: ITEMS_PER_PAGE,
+          sortFollowers: "desc", // Sort by followers descending
+        })
+      );
+
+      if (fetchAllUsersAsync.fulfilled.match(result)) {
+        const users = result.payload.resData.users || [];
+        setPopularUsers(users);
+        // Set first user as selected by default
+        if (users.length > 0 && !selectedPopularUserProfile) {
+          dispatch(setSelectedPopularUserProfile(users[0]));
+        }
+      }
+    };
+
+    fetchPopularUsers();
+  }, [dispatch, selectedPopularUserProfile]);
+
+  // Update selected profile when clicking on a user
+  const handleUserClick = (user) => {
+    dispatch(setSelectedPopularUserProfile(user));
+  };
+
   return (
     <MainContainer>
       <PopularUsersComponentContainer currentTheme={currentTheme}>
         <h2>Top Profiles</h2>
         <NamesUser>
-          {allUsers &&
-            allUsers.map((user, idx) => (
-              <PopularUserElement user={user} key={idx} i={idx} />
-            ))}
+          {loading && popularUsers.length === 0 ? (
+            <LoadingMessage currentTheme={currentTheme}>
+              Loading popular users...
+            </LoadingMessage>
+          ) : (
+            popularUsers.map((user, idx) => (
+              <PopularUserElement
+                user={user}
+                key={user._id || idx}
+                idx={idx}
+                onClick={() => handleUserClick(user)}
+                isSelected={selectedPopularUserProfile?._id === user._id}
+                currentTheme={currentTheme}
+              />
+            ))
+          )}
         </NamesUser>
       </PopularUsersComponentContainer>
-      {/* <PopularUserProfile selectedUser={selectedUser} /> */}
       {selectedPopularUserProfile ? (
         <Profile
           user={selectedPopularUserProfile}
           width="80px"
-          height={'80px'}
+          height={"80px"}
           containerWidth="100%"
-          flexDirection={'column'}
+          flexDirection={"column"}
         />
       ) : (
-        <>Loading User Details...</>
+        <LoadingMessage currentTheme={currentTheme}>
+          Loading User Details...
+        </LoadingMessage>
       )}
     </MainContainer>
+  );
+};
+
+const PopularUserElement = ({
+  user,
+  idx,
+  onClick,
+  isSelected,
+  currentTheme,
+}) => {
+  if (!user) return null;
+  const followersCount = user.followers?.length || 0;
+
+  return (
+    <PopularUserElementContainer
+      currentTheme={currentTheme}
+      onClick={onClick}
+      isSelected={isSelected}
+    >
+      <Heading currentTheme={currentTheme}>
+        {idx === 0 && (
+          <h3>
+            {idx + 1}. {user?.name || "Unknown"} ({followersCount} followers)
+          </h3>
+        )}
+        {idx !== 0 && (
+          <h4>
+            {idx + 1}. {user?.name || "Unknown"} ({followersCount} followers)
+          </h4>
+        )}
+      </Heading>
+    </PopularUserElementContainer>
   );
 };
 
@@ -64,6 +133,7 @@ const NamesUser = styled.div`
     padding: 0.5rem 1rem;
   }
 `;
+
 const PopularUsersComponentContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -74,7 +144,6 @@ const PopularUsersComponentContainer = styled.div`
   gap: 1rem;
   padding: 2rem 0;
   h2 {
-    /* background-color: lightskyblue; */
     padding: 0.7rem;
     border-radius: 10px;
   }
@@ -106,32 +175,6 @@ const MainContainer = styled.div`
   }
 `;
 
-export default PopularUsersComponent;
-
-const PopularUserElement = ({ user, i: idx }) => {
-  const currentTheme = useSelector(selectTheme);
-  const dispatch = useDispatch();
-  return (
-    <PopularUserElementContainer
-      currentTheme={currentTheme}
-      onClick={() => dispatch(setSelectedPopularUserProfile(user))}
-    >
-      <Heading currentTheme={currentTheme}>
-        {idx == 0 && (
-          <h3>
-            {idx + 1}. {user.name}
-          </h3>
-        )}
-        {idx != 0 && (
-          <h4>
-            {idx + 1}. {user.name}
-          </h4>
-        )}
-      </Heading>
-    </PopularUserElementContainer>
-  );
-};
-
 const Heading = styled.div`
   background-color: ${(props) => props.theme[props.currentTheme].bg};
 `;
@@ -140,26 +183,34 @@ const PopularUserElementContainer = styled.div`
   margin: 0 auto;
   padding: 1rem 0.8rem;
   display: flex;
-  background-color: ${(props) => props.theme[props.currentTheme].bg};
+  background-color: ${(props) =>
+    props.isSelected
+      ? props.theme[props.currentTheme].bgGreen
+      : props.theme[props.currentTheme].bg};
   justify-content: center;
   gap: 1rem;
   align-items: center;
   cursor: pointer;
-  /* border-bottom: 1px solid lightgray; */
   border-radius: 10px;
+  transition: all 0.2s ease;
   h3 {
     font-size: 18px;
-    background-color: ${(props) => props.theme[props.currentTheme].bg};
+    background-color: ${(props) =>
+      props.isSelected
+        ? props.theme[props.currentTheme].bgGreen
+        : props.theme[props.currentTheme].bg};
     color: orange;
   }
   h4 {
-    background-color: ${(props) => props.theme[props.currentTheme].bg};
+    background-color: ${(props) =>
+      props.isSelected
+        ? props.theme[props.currentTheme].bgGreen
+        : props.theme[props.currentTheme].bg};
   }
 
   &:hover {
     scale: 105%;
     background-color: ${(props) => props.theme[props.currentTheme].bgGreen};
-    /* background-color: lightgreen; */
     h3 {
       background-color: ${(props) => props.theme[props.currentTheme].bgGreen};
     }
@@ -169,30 +220,11 @@ const PopularUserElementContainer = styled.div`
   }
 `;
 
-const Image = styled.img`
-  width: 50px;
-  height: 50px;
-  border-radius: 100%;
-  /* border: 1px solid lightgray; */
-  padding: 5px;
+const LoadingMessage = styled.div`
+  text-align: center;
+  padding: 2rem;
+  color: ${(props) => props.theme[props.currentTheme].text};
+  opacity: 0.7;
 `;
 
-const PopularUserProfile = ({ selectedUser: user }) => {
-  console.log(user);
-  return (
-    <PopularUserProfileContainer>
-      <Profile
-        user={user}
-        width="80px"
-        height={'80px'}
-        containerWidth="100%"
-        flexDirection={'column'}
-      />
-    </PopularUserProfileContainer>
-  );
-};
-
-const PopularUserProfileContainer = styled.div`
-  /* height: 100%; */
-  /* background-color: aqua; */
-`;
+export default PopularUsersComponent;
